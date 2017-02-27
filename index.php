@@ -76,14 +76,14 @@ require_once('functions.inc');
 								<li><strong>config/config.php</strong>
 								<ol>
 								<li><p>Change the value of <strong>baseurlpath</strong> to <var>host/saml_url/</var> (make sure to end with a forward slash)</p></li>
-								<li><p>Change the value of <strong>auth.adminpassword</strong> to a new password. This is the password used for the admin login on the SimpleSaml Service Provider, so make sure to pick a safe password.</p>
-								<li><p>Change the value of <strong>secretsalt</strong> to a new string of any length. The best practice for generating such a salt is using the following command:</p>
-								<pre><code class="bash">$ tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo</code></pre></li>
-								<li><p>Change the value of <strong>technicalcontact_email</strong> to an e-mail address the technical administrator can receive e-mails on. This e-mailaddress is used by SimpleSaml to send error reports and this e-mail address will be public.</p></li>
-								<li><p>Set <strong>admin.protectedindexpage</strong> to <var>true</var></p></li>
-								<li><p>Add <var>"anamidp.services.uu.nl"</var> and <var>"namidp.services.uu.nl"</var> to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
 								<li><p>Change <strong>debug</strong> and <strong>showerrors</strong> to <var>false</var>.</p></li>
-								<li><p>Change <strong>session.cookie.secure</strong> and <strong>session.phpsession.httponly</strong> to <var>true</var>.</p></li>
+								<li><p>Change the value of <strong>auth.adminpassword</strong> to a new password. This is the password used for the admin login on the SimpleSaml Service Provider, so make sure to pick a safe password.</p>
+								<li><p>Set <strong>admin.protectedindexpage</strong> and <strong>admin.protectedmetadata</strong> to <var>true</var></p></li>
+								<li><p>Change the value of <strong>secretsalt</strong> to a new string of any length. The best practice for generating such a salt is using the following command:</p>
+								<pre><code class="bash">$ <?=htmlspecialchars("tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo");?></code></pre></li>
+								<li><p>Change the value of <strong>technicalcontact_email</strong> to an e-mail address the technical administrator can receive e-mails on. This e-mailaddress is used by SimpleSaml to send error reports and this e-mail address will be public.</p></li>
+								<li><p>Change <strong>session.cookie.secure</strong> and <strong>session.phpsession.httponly</strong> to <var>true</var>. Optionally, update <strong>session.cookie.path</strong>, <strong>session.cookie.domain</strong> and <strong>session.cookie.lifetime</strong> as explained in the comments above those fields.</p></li>
+								<li><p>Add <var>"anamidp.services.uu.nl"</var>, <var>"namidp.services.uu.nl"</var> and <var>host</var> (stripped of any https or path specifications) to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
 								</ol>
 								</li>
 								<li><strong>config/authsources.php</strong>
