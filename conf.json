@@ -1,0 +1,4 @@
+{
+	"saml_location" : "/var/www/simplesamlphp-1.14.11/",
+	"username_field_name" : "uuShortID"
+}
