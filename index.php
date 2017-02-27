@@ -144,7 +144,7 @@ require_once('functions.inc');
 						<h2 id="examples">Using SimpleSaml in your PHP Project</h2>
 						<p>Once the library is installed, SimpleSaml is relatively easy to load into your project. The following paragraphs describe how to use functionality from SimpleSaml in a PHP project. These functions are also documented in <a href="//simplesamlphp.org/docs/1.8/simplesamlphp-sp-api" target="_blank">the SimpleSaml docs</a></p>
 
-						<p>A few files with example code are provided. These can be used if the instructions in the previous chapter have been completed. Edit the <var>conf.json</var> file and change the value of <var>saml_location</var> to the absolute base path of the SAML installation on your server.</p>
+						<p>A few files with example code are provided in the <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">Github repository</a>. These can be used if the instructions in the previous chapter have been completed. Edit the <var>conf.json</var> file and change the value of <var>saml_location</var> to the absolute base path of the SAML installation on your server.</p>
 
 						<p>First, you have to load the library into your project, and then you have to create a SimpleSaml authentication object for your service provider. In this example, it is assumed the service provider is called <var>default-sp</var>. This depends on how you defined your service provider in <var>simplesaml/config/authsources.php</var>.</p>
 						<pre><code class="PHP">// Load SimpleSaml library
