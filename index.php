@@ -151,7 +151,7 @@ require_once('functions.inc');
 								<pre><code class="bash">$ <?=htmlspecialchars("tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo");?></code></pre></li>
 								<li><p>Change the value of <strong>technicalcontact_email</strong> to an e-mail address the technical administrator can receive e-mails on. This e-mailaddress is used by SimpleSaml to send error reports and this e-mail address will be public.</p></li>
 								<li><p>Change <strong>session.cookie.secure</strong> and <strong>session.phpsession.httponly</strong> to <var>true</var>. Optionally, update <strong>session.cookie.path</strong>, <strong>session.cookie.domain</strong> and <strong>session.cookie.lifetime</strong> as explained in the comments above those fields.</p></li>
-								<li><p>Add <var>"<span class="idp-base-link">namidp.services.uu.nl</span>"</var> and <var>host</var> (stripped of any https or path specifications) to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
+								<li><p>Add <i>"<span class="idp-base-link">namidp.services.uu.nl</span>"</i> and <var>host</var> (stripped of any https or path specifications) to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
 								</ol>
 								</li>
 								<li><strong>config/authsources.php</strong>
