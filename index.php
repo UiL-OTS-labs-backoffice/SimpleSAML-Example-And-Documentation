@@ -22,6 +22,9 @@ require_once('functions.inc');
 	<script>
 		hljs.initHighlightingOnLoad();
 		$('document').ready(function(){
+			
+			environmentChanged();
+
 			$('#environmentSelector').bootstrapSwitch({
 			    on: 'Production', // default 'On'
 			    off: 'Acceptation', // default 'Off'
