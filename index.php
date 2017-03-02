@@ -18,12 +18,63 @@ require_once('functions.inc');
 
 	<script type="text/javascript" src="//npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="lib/highlight/highlight.pack.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
+	<script type="text/javascript" src="lib/bootstrap-switch.js"></script>
+	<script>
+		hljs.initHighlightingOnLoad();
+		$('document').ready(function(){
+			$('#environmentSelector').bootstrapSwitch({
+			    on: 'Production', // default 'On'
+			    off: 'Acceptation', // default 'Off'
+			    same: true, // default false. same text for on/off and onLabel/offLabel
+			    size: 'sm', // xs/sm/md/lg, default 'md'
+			    onClass: 'success', //success/primary/danger/warning/default, default 'primary'
+			    offClass: 'success', //success/primary/danger/warning/default default 'default'
+			});
+		});
+
+		function environmentChanged() {
+			production = $('#environmentSelector').is(':checked');
+			var namidpMetaProd = 'https://namidp.services.uu.nl/nidp/saml2/metadata';
+			var namidpMetaAcc = 'https://anamidp.services.uu.nl/nidp/saml2/metadata'
+			var logoutProd = 'http://logout.uu.nl';
+			var logoutAcc = 'http://logout.acc.uu.nl';
+			var generalIdpProd = 'namidp.services.uu.nl';
+			var generalIdpAcc = 'anamidp.services.uu.nl';
+
+			$namidpMeta = production ? namidpMetaProd : namidpMetaAcc;
+			$logout = production ? logoutProd : logoutAcc;
+			$general = production ? generalIdpProd : generalIdpAcc;
+
+			$evn = production ? "On acceptation: " : "On production: ";
+			$namIdpMetaTitle = $evn + (production ? namidpMetaAcc : namidpMetaProd);
+			$logoutTitle = $evn + (production ? logoutAcc : logoutProd);
+			$generalTitle = $evn + (production ? generalIdpAcc : generalIdpProd);
+
+			$('.idp-base-link').html($general); $('.idp-base-link').prop("title", $generalTitle);
+			$('.namidp-metadata-link').html($namidpMeta); $('.namidp-metadata-link').prop("title", $namIdpMetaTitle);
+			$('.namidp-logout-link').html($logout); $('.namidp-logout-link').prop("title", $logoutTitle);
+
+			addPopover('idp-base-link');
+			addPopover('namidp-metadata-link');
+			addPopover('namidp-logout-link');
+
+			$('.PHP').each(function(i, block){
+				hljs.highlightBlock(block);
+			});
+		}
+
+		function addPopover(el) {
+			$('.' + el).prop('data-toggle', 'tooltip');
+			$('.' + el).prop('data-placement', 'top');
+			$('.' + el).tooltip();
+		}
+	</script>
 	<body style="padding-top: 20px; padding-bottom: 50px; position: relative" data-spy="scroll" data-target="#scrollSpy">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3 hidden-sm-down" id="scrollSpy" style="position: relative;">
-					<ul class="nav nav-list about-list hidden-phone hidden-tablet affix fixed" style="position: fixed;">
+					<div style="position: fixed;">
+					<ul class="nav nav-list about-list hidden-phone hidden-tablet affix fixed" >
 						<li><a href="#setup">Set-up SimpleSaml library</a></li>
 						<li><a href="#examples">Using SimpleSaml in your Project</a>
 							<ul>
@@ -36,9 +87,15 @@ require_once('functions.inc');
 						</li>
 						<li><a href="#deviate">Deviate from the Single Sign-On</a></li>
 					</ul>
+					<p>
+					<br/>
+					Environment:<br/>
+					<input type="checkbox" id="environmentSelector" checked="checked" onchange="environmentChanged();"/>
+					</p>
+					</div>
 				</div>
 				<div class="col-md-9 col-sm-12">
-						<h1 id="how-to-saml">How to Saml</h1>
+						<h1 id="how-to-saml">how-to Saml</h1>
 						<small style="padding-bottom: 100px; display: block; position: relative;">
 							<div class="col-md-6 col-sm-12">
 							Documentation written by <a href="http://uilots-labs.wp.hum.uu.nl/people/#AJM" target="_blank">A.J. de Mooij</a>.<br/>
@@ -49,15 +106,26 @@ require_once('functions.inc');
 							Special thanks to <a href="https://www.uu.nl/medewerkers/TPRdeHaas" target="_blank">T.P.R. de Haas</a>.<br/>Information and Technology Services.<br/><a href="https://www.uu.nl/" target="_blank">Utrecht University</a>
 							</div>
 						</small>
-						<p>This how to tries to describe the process of setting up SimpleSaml to talk to the Identity Provider of University Utrechts ITS, and subsequently setting up a PHP project to make use of the features offered by SimpleSaml.</p>
+						<p>This how-to tries to describe the process of setting up SimpleSaml to talk to the Identity Provider of University Utrechts ITS, and subsequently setting up a PHP project to make use of the features offered by SimpleSaml.</p>
 						<p>Saml (Security Assertion Markup Language) is an xml-based standard for allowing federated authentication. The Univerity Utrecht is slowly moving all its web applications from LDAP authentication to Saml. With SAML, the user is redirected to a login page of the university, so no passwords have to be sent over the server that hosts an application, while still allowing Solis-ID authentication.</p>
 						<p>SAML consists of two parts: The Identity Provider (IdP) and the Service Provider (SP). The Identity Provider is hosted by the university. The Service Provider rests with the application, and communicates with the Identity Provider.</p>
-						<p>This how to tries to describe how to set up a SAML Service Provider to communicate with the universities Identity Provider using the PHP library <i>SimpleSaml</i>. This how to focusses especially on PHP, but may be useful for other languages for which SAML libraries exist (such as Python).</p>
+						<p>This how-to tries to describe how to set up a SAML Service Provider to communicate with the universities Identity Provider using the PHP library <i>SimpleSaml</i>. This how-to focusses especially on PHP, but may be useful for other languages for which SAML libraries exist (such as 
+							<a href="https://github.com/onelogin/python-saml" target="_blank">Python</a>,
+							<a href="https://github.com/onelogin/java-saml" target="_blank">Java</a>,
+							<a href="https://github.com/onelogin/ruby-saml" target="_blank">Ruby</a>,
+							<a href="https://github.com/onelogin/wordpress-saml" target="_blank">Wordpress</a>, etc
+							).</p>
+
+						<p>In the left menu you can select the production or acceptation environment for this how-to (<a href="#environmentCollapse" data-toggle="collapse" aria-expaned="false">read more</a>)</p>
+						<div class="collapse" id="environmentCollapse"><div class="card"><div class="card-block">
+						<p>ITS provides two environments. The production environment contains all Solis-IDs available for employees and students of Utrecht University and is more strict in how it can be used. For development and acceptation, an acceptation invironment is available. This environment is slightly less strict, which works well for development, but does not contain default Solis-ID's. Instead, you have to work with test accounts, which ITS can create for you.</p>
+						<p>In the side menu, you can choose to read this how-to for production or for acceptation. The required URLS are automatically adapted for the environment you chose. Except for in the code boxes, howevering a url will show the value for the other environment, if it differs from the selected environment.</p>
+						<p>In the code examples which you can find in the repository, the acceptation environment is always used. To test the examples for production, you will have to adapt the code to production.</p>
+						</div></div></div>
 						<h2 id="setup">Set-up SimpleSaml library</h2>
 						<p>ITS requires all service providers to send its authentication requests over SSL. This means SimpleSaml can only be used with servers that serve the web application over secure HTTP (HTTPS).</p>
 						<p>The instructions in this chapter follow the <a href="https://simplesamlphp.org/docs/stable/simplesamlphp-install" target="_blank">SimpleSaml tutorial</a>, but are finetuned on how to work with the Identity Provider served by ITS.</p>
 						<p>In this tutorial, the name <var>hostname</var> will be used for the base URL of the web application. The name <var>saml_location</var> will be used for the absolute path saml is installed in. The name <var>saml_url</var> will be used for the url path to the saml service provider (as <var>host/saml_url</var>). The name <var>deploy_directory</var> will be used to refer to a private location on your server, where deployment files are placed. A bash script is provided in the file <var>deploy_saml.sh</var> in this repository, which will take away some of the heavy load.</p>
-
 						<ol>
 							<li><p>Download the latest SimpleSaml release from <a href="https://simplesamlphp.org/download" target="_blank">https://simplesamlphp.org/download</a> to <var>deploy_dir</var> on your server.</p></li>
 							<li><p>Make sure all PHP packages mentioned in <a href="https://simplesamlphp.org/docs/stable/simplesamlphp-install" target="_blank">section 3 of the SimpleSaml docs</a> are installed. Most of these are standard.</p></li>
@@ -83,7 +151,7 @@ require_once('functions.inc');
 								<pre><code class="bash">$ <?=htmlspecialchars("tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo");?></code></pre></li>
 								<li><p>Change the value of <strong>technicalcontact_email</strong> to an e-mail address the technical administrator can receive e-mails on. This e-mailaddress is used by SimpleSaml to send error reports and this e-mail address will be public.</p></li>
 								<li><p>Change <strong>session.cookie.secure</strong> and <strong>session.phpsession.httponly</strong> to <var>true</var>. Optionally, update <strong>session.cookie.path</strong>, <strong>session.cookie.domain</strong> and <strong>session.cookie.lifetime</strong> as explained in the comments above those fields.</p></li>
-								<li><p>Add <var>"anamidp.services.uu.nl"</var>, <var>"namidp.services.uu.nl"</var> and <var>host</var> (stripped of any https or path specifications) to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
+								<li><p>Add <var>"<span class="idp-base-link">namidp.services.uu.nl</span>"</var> and <var>host</var> (stripped of any https or path specifications) to the <strong>trusted.url.domains</strong> array. Add other domains you wish to redirect to after a login or logout request as well.</p></li>
 								</ol>
 								</li>
 								<li><strong>config/authsources.php</strong>
@@ -92,7 +160,7 @@ require_once('functions.inc');
 								<li><p>In the array with the (former) key <var>'default-sp'</var>, add two key-value pairs:</p>
 								<pre><code class="PHP">'privatekey' => 'saml.pem',
 'certificate' => 'saml.crt'</code></pre><p>These keys refer to the private and public keys that were generated earlier.</li>
-								<li><p>Change the value of <strong>idp</strong> to either <var>"https://anamidp.services.uu.nl/nidp/saml2/metadata"</var> (to communicate with the less strict acceptation Identity Provider) or <var>"https://namidp.services.uu.nl/nidp/saml2/metadata"</var> (for the production Identity Provider).</p></li>
+								<li><p>Change the value of <strong>idp</strong> to <i>"<span class="namidp-metadata-link">https://namidp.services.uu.nl/nidp/saml2/metadata</span>"</i></p></li>
 								</ol>
 								<p>Example minimal contents configuration:</p>
 								<pre><code class="PHP">$config = array(
@@ -119,8 +187,7 @@ require_once('functions.inc');
 
     // The entity ID of the IdP this should SP should contact.
     // Can be NULL/unset, in which case the user will be shown a list of available IdPs.
-    'idp' => 'https://namidp.services.uu.nl/nidp/saml2/metadata', // production
-    // 'idp' => 'https://anamidp.services.uu.nl/nidp/saml2/metadata', // acceptation
+    'idp' => '<span class="namidp-metadata-link">https://namidp.services.uu.nl/nidp/saml2/metadata</span>',
 
     // The URL to the discovery service.
     // Can be NULL/unset, in which case a builtin discovery service will be used.
@@ -205,12 +272,12 @@ if($as->isAuthenticated()) {
 echo sprintf('&lt;a href="%1$s"&gt;login&lt;/a&gt;', htmlspecialchars($url));</code></pre>
 						<p>An example using links for logging in and out can be found in <a href="loginOutLinks.php" target="_blank">loginOutLinks.php</a> in this repository</p>
 						<h3 id="logout">Loging out</h3>
-						<p>There are two ways of logging out. One is to call the <var>logout()</var> function, the other is to request the logout url from SimpleSaml, so you can provide a logout link to the user. In both cases, the <var>ReturnTo</var> should be set to the UU logout page, which handles logging out from the Identity Provider. The logout function which you can call in your project only logs the user out from the service provider. This url is <var>https://namidp.services.uu.nl/AGLogout</var> for the production Identity Provider and <var>https://anamidp.services.uu.nl/AGLogout</var> for the acceptation Identity Provider</p>
+						<p>There are two ways of logging out. One is to call the <var>logout()</var> function, the other is to request the logout url from SimpleSaml, so you can provide a logout link to the user. In both cases, the <var>ReturnTo</var> should be set to the UU logout page, which handles logging out from the Identity Provider. The logout function which you can call in your project only logs the user out from the service provider. This url is <i><span class="namidp-logout-link">http://logout.uu.nl</span></i>.</p>
 						<pre><code class="PHP">// Logout as soon as the page is loaded
-$as->logout('https://namidp.services.uu.nl/AGLogout');
+$as->logout('<span class="namidp-logout-link">http://logout.uu.nl</span>');
 
 // Or create a logout URL
-$url = $as->getLogoutURL('https://namidp.services.uu.nl/AGLogout');
+$url = $as->getLogoutURL('<span class="namidp-logout-link">http://logout.uu.nl</span>');
 echo sprintf('&lt;a href="%1$s"&gt;logout&lt;/a&gt;', htmlspecialchars($url));</code></pre>	<p>An example using links for logging in and out can be found in <a href="loginOutLinks.php" target="_blank">loginOutLinks.php</a> in this repository</p>		
 						<h3 id="force auth">Force authentication</h3>
 						<p>The <var>ForceAuthn</var> parameter can be especially useful to secure certain operations behind a verify login function. This can be the case if you want to make sure the user performing the action is the user that is still logged in, and not someone who noticed a web page is still left open and wants to abuse that.</p>
@@ -239,7 +306,7 @@ echo sprintf('&lt;a href="%1$s"&gt;logout&lt;/a&gt;', htmlspecialchars($url));</
  }</code></pre>
  						<p>An example for reauthentication using SimpleSaml can be found in <a href="reAuthenticate.php" target="_blank">reAuthenticate.php</a> in this repository</p>
  						<h2 id="deviate">Deviate from the Single Sign-On</h3>
-						<p>ITS envisions most applications to be only accessible for authenticated users. This works by <a href="#req-auth">requiring users to be authenticated</a> before the website loads. If a user is not yet authenticated with the Identity Provider, the user is redirected to the login page and redirected back after succesful authentication. If the user already is authenticated with the Identity Provider, but not with the Service Provider, a <i>passive authentication request</i> is sent out, unless <var>ForceAuthn</var> is enabled either in the request, or in the authentication source configuration. Similarily, in order to logout, a user should be directed to <i>https://namidp.services.uu.nl/AGLogout</i> after logging out of the Service Provider, which means the user is not redirected back to the original application</p>
+						<p>ITS envisions most applications to be only accessible for authenticated users. This works by <a href="#req-auth">requiring users to be authenticated</a> before the website loads. If a user is not yet authenticated with the Identity Provider, the user is redirected to the login page and redirected back after succesful authentication. If the user already is authenticated with the Identity Provider, but not with the Service Provider, a <i>passive authentication request</i> is sent out, unless <var>ForceAuthn</var> is enabled either in the request, or in the authentication source configuration. Similarily, in order to logout, a user should be directed to <i><span class="namidp-logout-link">http://logout.uu.nl</span></i> after logging out of the Service Provider, which means the user is not redirected back to the original application</p>
 						<p>This makes sense in the scenario envisioned above, as users would otherwise be redirected back directly to a login box after logging out, but in other scenarios, it may be more useful to be redirected directly to the application. By adding the following configuration to your <var>default-sp</var> configuration in <var>config/authsources.php</var>, this can be achieved:</p>
 						<pre><code class="PHP">'redirect.sign' => TRUE,
 'redirect.validate' => TRUE,
@@ -248,7 +315,7 @@ echo sprintf('&lt;a href="%1$s"&gt;logout&lt;/a&gt;', htmlspecialchars($url));</
 'validate.logout' => TRUE,</code></pre>
 						<p>It is also possible to simply add<pre><code class="PHP">'ForceAuthn' => TRUE</code></pre> to this configuration, but the configuration above is more suited to deal with this. In order to explain this, it is important to understand how the SAML Single Sign-Out strategy works</p>
 						<p>The Single Sign-Out strategy is an extension of the Single Sign-On strategy, which reverses the process. With a Single Sign-On request, a user is both authenticated with the Service Provider (which rests with the web application) and the Identity Provider (which actually matches login requests against a user database). In order to be logged in with the Service Provider, one has to be logged in with the Identity Provider, but this does not hold the other way around.</p>
-						<p>When a logout request is generated, e.g. by means of <pre><code class="PHP">$as->logout();</code></pre> a function is called that signs the user out of the Service Provider, but not of the Identity Provider. The webpage <i>https://namidp.services.uu.nl/AGLogout</i> handles the signout of the user from the Identity Provider, which is why this is where a user should be redirected to after a logout request from the Service Provider.</p> <p>Now imagine a user <var>A</var> signing in on a web application. An authentication request is sent to the Service Provider. With a passive request, the Service Provider requests the Identity Provider if someone is already logged in and if so, logs that user in automatically. With an <i>active</i> request, however, the Service Provider always asks the user to login manually. If user A subsequently logs out from the Service Provider, but not from the Identity Provider, and then a person B tries to authenticate, the Service Provider asks the Identity Provider to check the credentials of user B, but the Identity Provider still has a person A logged in and thus the authentication fails.</p>
+						<p>When a logout request is generated, e.g. by means of <pre><code class="PHP">$as->logout();</code></pre> a function is called that signs the user out of the Service Provider, but not of the Identity Provider. The webpage <i><span class="namidp-logout-link">http://logout.uu.nl</span></i> handles the signout of the user from the Identity Provider, which is why this is where a user should be redirected to after a logout request from the Service Provider.</p> <p>Now imagine a user <var>A</var> signing in on a web application. An authentication request is sent to the Service Provider. With a passive request, the Service Provider requests the Identity Provider if someone is already logged in and if so, logs that user in automatically. With an <i>active</i> request, however, the Service Provider always asks the user to login manually. If user A subsequently logs out from the Service Provider, but not from the Identity Provider, and then a person B tries to authenticate, the Service Provider asks the Identity Provider to check the credentials of user B, but the Identity Provider still has a person A logged in and thus the authentication fails.</p>
 
 						<p>The <var>ForceAuthn</var> flag ensures users have to log in, even if they are already logged in with the Identity Provider. This is therefor a good feature for verifying the identity of the currently logged in user, but not so much for disabling the Single Sign-On and Out services. The configuration given above ensures two things:</p>
 						<ol>
