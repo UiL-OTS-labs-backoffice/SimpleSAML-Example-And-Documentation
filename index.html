@@ -1,7 +1,4 @@
 <!DOCTYPE html> 
-<?php
-require_once('functions.inc');
-?>
 <html>
 	<head>
 		<title>How-to Saml</title>
@@ -109,6 +106,8 @@ require_once('functions.inc');
 							Special thanks to <a href="https://www.uu.nl/medewerkers/TPRdeHaas" target="_blank">T.P.R. de Haas</a>.<br/>Information and Technology Services.<br/><a href="https://www.uu.nl/" target="_blank">Utrecht University</a>
 							</div>
 						</small>
+						<div class="row">
+						<div class="col-xs 12 col-md-7">
 						<p>This how-to tries to describe the process of setting up SimpleSaml to talk to the Identity Provider of University Utrechts ITS, and subsequently setting up a PHP project to make use of the features offered by SimpleSaml.</p>
 						<p>Saml (Security Assertion Markup Language) is an xml-based standard for allowing federated authentication. The Univerity Utrecht is slowly moving all its web applications from LDAP authentication to Saml. With SAML, the user is redirected to a login page of the university, so no passwords have to be sent over the server that hosts an application, while still allowing Solis-ID authentication.</p>
 						<p>SAML consists of two parts: The Identity Provider (IdP) and the Service Provider (SP). The Identity Provider is hosted by the university. The Service Provider rests with the application, and communicates with the Identity Provider.</p>
@@ -120,6 +119,17 @@ require_once('functions.inc');
 							).</p>
 
 						<p>In the left menu you can select the production or acceptation environment for this how-to (<a href="#environmentCollapse" data-toggle="collapse" aria-expaned="false">read more</a>)</p>
+						</div>
+							<div class="col-xs-12 col-md-5">
+								<div class="card">
+									<div class="card-block">
+									<h4 class="card-title">Join the cause!</h4>
+									<p class="card-text">This how-to currently only describes implementing SAML into your application using the PHP Library SimpleSaml PHP. For many other programming languages, implementations exist as well. For example, <a href="https://github.com/onelogin/" target="_blank">OneLogin</a> provides such libraries for many languages.</p>
+									<p class="card-text">The aim of this repository is to give guidance in implementing SAML into an application of <i>any</i> language. Did this how-to help you, but did you end up using a library not yet documented in this how-to, or do you want to suggest improvements?</p><p><strong>Then please help us</strong> by cloning <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">this repository</a>, creating minimal code examples for the used programming language or updating the how-to and create a pull request.
+									</div>
+								</div>
+							</div>
+						</div>
 						<div class="collapse" id="environmentCollapse"><div class="card"><div class="card-block">
 						<p>ITS provides two environments. The production environment contains all Solis-IDs available for employees and students of Utrecht University and is more strict in how it can be used. For development and acceptation, an acceptation invironment is available. This environment is slightly less strict, which works well for development, but does not contain default Solis-ID's. Instead, you have to work with test accounts, which ITS can create for you.</p>
 						<p>In the side menu, you can choose to read this how-to for production or for acceptation. The required URLS are automatically adapted for the environment you chose. Except for in the code boxes, howevering a url will show the value for the other environment, if it differs from the selected environment.</p>
@@ -214,7 +224,7 @@ require_once('functions.inc');
 						<h2 id="examples">Using SimpleSaml in your PHP Project</h2>
 						<p>Once the library is installed, SimpleSaml is relatively easy to load into your project. The following paragraphs describe how to use functionality from SimpleSaml in a PHP project. These functions are also documented in <a href="//simplesamlphp.org/docs/1.8/simplesamlphp-sp-api" target="_blank">the SimpleSaml docs</a></p>
 
-						<p>A few files with example code are provided in the <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">Github repository</a>. These can be used if the instructions in the previous chapter have been completed. Edit the <var>conf.json</var> file and change the value of <var>saml_location</var> to the absolute base path of the SAML installation on your server.</p>
+						<p>A few files with example code are provided in the <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">Github repository</a>. These can be used by you if the instructions in the previous chapter have been completed and you have cloned this repository to your server. Edit the <var>conf.json</var> file and change the value of <var>saml_location</var> to the absolute base path of the SAML installation on your server.</p>
 
 						<p>First, you have to load the library into your project, and then you have to create a SimpleSaml authentication object for your service provider. In this example, it is assumed the service provider is called <var>default-sp</var>. This depends on how you defined your service provider in <var>simplesaml/config/authsources.php</var>.</p>
 						<pre><code class="PHP">// Load SimpleSaml library
