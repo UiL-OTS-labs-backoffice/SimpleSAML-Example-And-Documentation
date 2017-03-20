@@ -120,15 +120,15 @@
 
 						<p>In the left menu you can select the production or acceptation environment for this how-to (<a href="#environmentCollapse" data-toggle="collapse" aria-expaned="false">read more</a>)</p>
 						</div>
-							<div class="col-xs-12 col-md-5">
-								<div class="card">
-									<div class="card-block">
-									<h4 class="card-title">Join the cause!</h4>
-									<p class="card-text">This how-to currently only describes implementing SAML into your application using the PHP Library SimpleSaml PHP. For many other programming languages, implementations exist as well. For example, <a href="https://github.com/onelogin/" target="_blank">OneLogin</a> provides such libraries for many languages.</p>
-									<p class="card-text">The aim of this repository is to give guidance in implementing SAML into an application of <i>any</i> language. Did this how-to help you, but did you end up using a library not yet documented in this how-to, or do you want to suggest improvements?</p><p><strong>Then please help us</strong> by cloning <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">this repository</a>, creating minimal code examples for the used programming language or updating the how-to and create a pull request.
-									</div>
+						<div class="col-xs-12 col-md-5">
+							<div class="card">
+								<div class="card-block">
+								<h4 class="card-title">Join the cause!</h4>
+								<p class="card-text">This how-to currently only describes implementing SAML into your application using the PHP Library SimpleSaml PHP. For many other programming languages, implementations exist as well. For example, <a href="https://github.com/onelogin/" target="_blank">OneLogin</a> provides such libraries for many languages.</p>
+								<p class="card-text">The aim of this repository is to give guidance in implementing SAML into an application of <i>any</i> language. Did this how-to help you, but did you end up using a library not yet documented in this how-to, or do you want to suggest improvements?</p><p><strong>Then please help us</strong> by cloning <a href="https://github.com/UiL-OTS-labs-backoffice/SimpleSAML-Example-And-Documentation" target="_blank">this repository</a>, creating minimal code examples for the used programming language or updating the how-to and create a pull request.
 								</div>
 							</div>
+						</div>
 						</div>
 						<div class="collapse" id="environmentCollapse"><div class="card"><div class="card-block">
 						<p>ITS provides two environments. The production environment contains all Solis-IDs available for employees and students of Utrecht University and is more strict in how it can be used. For development and acceptation, an acceptation invironment is available. This environment is slightly less strict, which works well for development, but does not contain default Solis-ID's. Instead, you have to work with test accounts, which ITS can create for you.</p>
@@ -170,7 +170,16 @@
 								</li>
 								<li><strong>config/authsources.php</strong>
 								<ol>
-								<li><p>(Optional) Change the array key that is named <var>'default-sp'</var> to a name you want your Service Provider to have.</p></li>
+								<li>
+									<p>(Optional) Change the array key that is named <var>'default-sp'</var> to a name you want your Service Provider to have.</p>
+									<p><a href="#changeSpnameWarning" data-toggle="collapse" aria-expaned="false">Warning! Not without consequence</a></p>
+									<div class="collapse" id="changeSpnameWarning">
+									<p>
+									SimpleSAML php, like many other SAML providers, automatically generate a so called <i>Entity ID</i> based on the name of your service provider you define here. You can change this value without any problem as long as you have not yet sent your meta data to ITS. However, the Identity Provider of ITS expects the Entity ID to be that which is set in your meta data, as it uses this value to verify the identity of the Service Provider sending an authentication request. If you wish to change this value <i>after</i> the meta data of your Service Provider has been added to the Identity Provider that is hosted by ITS, make sure the Entity ID does <i>not</i> change.</p>
+									<p>You can find the generated Entity ID in the meta data that you sent to ITS. Check the meta data (see steps 7 and 8 how to find your meta data) for the key <var>entityID</var>. This key will most likely have a value of the form <var>host/saml_url/module.php/saml/sp/metadata.php/default-sp</var> where <var>default-sp</var> is what you previously named your Service Provider.</p>
+									<p>In the configuration array of the Service Provider, change the value of <var>entityID</var> from <var>null</var> to this value. Now this entityID is sent to the ITS Identity Provider regardless of the name of your Service Provider and no problems should occur when you change it</p>
+									</div>
+								</li>
 								<li><p>In the array with the (former) key <var>'default-sp'</var>, add two key-value pairs:</p>
 								<pre><code class="PHP">'privatekey' => 'saml.pem',
 'certificate' => 'saml.crt'</code></pre><p>These keys refer to the private and public keys that were generated earlier.</li>
@@ -220,7 +229,22 @@
 							<li><p>If ITS accepts the request, they will add your Service Provider to their Identity Provider and send you back a file called <var>saml20-idp-remote.php</var>.</p>
 							<p>Place this file in the <var>metadata</var> directory inside your <var>deploy_dir</var> and rerun the bash script <var>deploy_saml.sh</var> from your <var>deploy_dir</var>.</p>
 							<p>This file is unique for the Identity Provider you register your service provider with and so does not change when you set op another service provider on another server. Once you have this file, you can use it on other servers as well, as long as you want to connect to the same Identity Provider on those servers (notice that the acceptation and production versions of the Identity Provider are two distinct Identity Providers, so switching between those requires switching between these files). You will, however, still need to contact ITS, as they will have to add your Service Provider to their Identity Provider.</p></li>
-							<li><p>Go to <var>host/saml_url</var> and click the page <var>authentication</var>. Click <var>test configured authentication sources</var>. This should redirect you to the UU login page.</p><p>Enter your Solis-ID and password (or test account credentials if you are on the acception Identity Provider and your own Solis-ID has not been added) and click <var>login</var>.</p><p>If all works well, you are set up to implement SimpleSaml into your web application. If you see an error, the debugging begins, which this how-to does not provide any answers for.</p></li>
+							<li><p>Go to <var>host/saml_url</var> and click the page <var>authentication</var>. Click <var>test configured authentication sources</var>. This should redirect you to the UU login page.</p><p>Enter your Solis-ID and password (or test account credentials if you are on the acception Identity Provider and your own Solis-ID has not been added) and click <var>login</var>.</p><p>If all works well, you are set up to implement SimpleSaml into your web application. If you see an error, the debugging begins, which this how-to cannot provide more than <a href="#debug_saml_collapse"  data-toggle="collapse" aria-expaned="false">the most general pointers for</a>. 
+
+							<div class="collapse" id="debug_saml_collapse">
+							<p>Debugging is made easiest by enabling debugging in your <var>config.php</var>. For full debugging, change the <var>config.php</var> to the following values:</p>
+							<pre><code class="php">'debug' => true
+'showerrors' => true,
+'errorreporting' => false,
+debug.validatexml' => false,
+'logging.level' => SimpleSAML_Logger::DEBUG,
+'logging.handler' => 'syslog'
+							</code></pre>
+							<p>Now check the syslog with <pre><code class="bash">$ sudo tail -f /var/log/syslog</code></pre> (or whatever other location your syslog is, or whatever log you set in <var>logging.handler</var>).</p>
+							<p>Make sure to disable debugging in production.</p>
+							<p>If authentication already fails with the Identity Provider (e.g. with an <i>untrusted source</i> message), you are most likely to have made a mistake in the configuration of the Service Provider, or your Service Provider is not yet registered with the Identity Provider.</p>
+							</div>
+							</li>
 						</ol>
 
 						<h2 id="examples">Using SimpleSaml in your PHP Project</h2>
