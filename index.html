@@ -581,13 +581,13 @@ from onelogin.saml2.utils import OneLogin_Saml2_Utils
 <p><pre><code class="python">def prepare_from_django_request(request):
     return {
         'http_host': request.META['HTTP_HOST'],
-        'script_name': request.META['PATH_INFO'],
+        'script_name': request.META['SCRIPT_NAME'] + request.META['PATH_INFO'],
         'server_port': request.META['SERVER_PORT'],
         'get_data': request.GET.copy(),
         'post_data': request.POST.copy()
     }
 </code></pre></p>
-<p>How to do this for other frameworks is shown in the various demos linked earlier.</p>
+<p>How to do this for other frameworks is shown in the various demos linked earlier. In this version the value for <i>script_name</i> is slightly altered from the demo to allow your Service Provider to work on a path on your domain (e.g. <i>hostname/saml/</i> instead of directly on <i>hostname</i>). Some people might prefer pointing the service provider to a different path than the root of the domain. If, when you set <i>strict</i> to true, suddenly SAML tells you it received an invalid response, the most likely reason is that you need to account for the subdirectory SAML is located in like in the example above.</p>
 <p>The auth object can be created like this:</p>
 <p><pre><code class="python">auth = OneLogin_Saml2_Auth(req, custom_base_path='/path/to/saml/configuration/')</code></pre></p>
 <p>You will need this auth object on any page you want to use SAML features on, so you might want to create a function that will generate this object automatically from the request object of your framework. The rest of this documentation will assume a function called <i>init_saml_auth(req)</i>, which creates the auth object from the req dictionary as indicated above. Further examples will be based on the Django framework, but an attempt will be made to generalize the code as much as possible.</p>
@@ -739,13 +739,30 @@ When the user navigates to this endpoint, she will be redirected to the IdP with
     dscb = lambda: request.session.flush()
 
     url = auth.process_slo(delete_session_cb=dscb)
+    if url is None:
+    	# If the SSO is initiated by the Service Provider, rather
+    	# than by the IdP, the process_slo function does not return
+    	# a url. In that case, we can extract it automatically from
+    	# the auth object (if the login function was called with
+    	# a 'return_to' parameter)
+    	url = auth.redirect_to()
     
     errors = auth.get_errors()
     if len(errors) == 0:
         if url is not None:
             return HttpResponseRedirect(url)
         else:
-            success_slo = True
+            return HttpResponse("Succesfully logged out!")
+    else:
+    	# Construct a useful error message
+    	msg = '&lt;p&gt;Logout failed&lt;/p&gt;'
+        msg += '&lt;ul&gt;'
+        for e in errors:
+            msg += '&lt;li&gt;{0}&lt;/li&gt;'.format(e)
+        msg += '&lt;/ul>'
+        msg += 'Reason: {0}'.format(auth.get_last_error_reason())
+        return HttpResponse(msg)
+
 </code></pre></p>
 							</div>
 						</div>
