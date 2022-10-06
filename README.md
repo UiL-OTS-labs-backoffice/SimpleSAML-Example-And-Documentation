@@ -1,5 +1,5 @@
 # CDH Federated Authentication Documentation
-This how to tries to describe the process of setting up Federated Authentication to talk to the Identity Provider of University Utrechts ITS and/or SurfConext. Currently it documents SAML authentication, but OpenID to be added in the future.
+This how to tries to describe the process of setting up Federated Authentication to talk to the Identity Provider of University Utrechts ITS and/or SurfConext. Currently it documents SAML authentication, with OpenID to be added in the future.
 
 The intention of this project is to use the community to add documentation and example implementations for many more langauges, which will be an ongoing project.
 
