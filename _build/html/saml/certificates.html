@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+    <meta charset="utf-8"/><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Generating self-signed certificates &mdash; CDH Federated Authentication  documentation</title>
+            <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
+            <link rel="stylesheet" href="../_static/theme.css" type="text/css"/>
+        <script src="../_static/bootstrap.bundle.min.js"></script>
+            
+                    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+                    <script src="../_static/doctools.js"></script>
+                    <script src="../_static/sphinx_highlight.js"></script>
+            <script src="../_static/js/theme.js"></script>
+            <link rel="index" title="Index" href="../genindex.html"/>
+            <link rel="search" title="Search" href="../search.html"/>
+            <link rel="next" title="Development IdP" href="../developmentidp/index.html"/>
+            <link rel="prev" title="Django guide" href="django.html"/> 
+    <style>
+        .navbar .caption {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="uu-root-container">
+    <div class="uu-header">
+        <div class="uu-header-row">
+            <div class="uu-logo">
+                <img src="../_static/logo-header-en.svg">
+            </div>
+            <div class="fs-3 ms-5 text-black">
+                CDH Federated Authentication  documentation
+            </div>
+            <div class="border-left ms-auto">
+                <div role="search" class="ms-auto">
+                  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+                    <input type="text" class="form-control" name="q" placeholder="Search docs" />
+                    <input type="hidden" name="check_keywords" value="yes" />
+                    <input type="hidden" name="area" value="default" />
+                  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        <nav class="navbar uu-navbar">
+            <div class="uu-navbar-container">
+                <a href="https://www.uu.nl" class="navbar-brand">
+                    <img src="../_static/logo-header-en.svg">
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbar-content"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon" />
+                </button>
+                <div id="navbar-content" class="collapse navbar-collapse">
+                        <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General information</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">SAML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developmentidp/index.html">Development IdP</a></li>
+</ul>
+
+                </div>
+            </div>
+        </nav>
+    <div class="uu-content">
+        <div class="uu-hero"><ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item">
+        <a href="../index.html">
+            CDH Federated Authentication
+        </a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="index.html"
+           
+               accesskey="U"
+               class="active"
+           >
+           SAML
+        </a>
+    </li>
+    <li class="breadcrumb-item active">Generating self-signed certificates</li>
+</ol></div> 
+                <div class="uu-container">
+                    <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                            <div itemprop="articleBody">
+                                
+  <section id="generating-self-signed-certificates">
+<h1>Generating self-signed certificates<a class="headerlink" href="#generating-self-signed-certificates" title="Permalink to this heading">¶</a></h1>
+<p>This guide describes how to generate certificates for use with SAML, conforming
+to the <a class="reference external" href="https://wiki.iam.uu.nl/books/saml-20/page/vereiste-instellingen">requirements from ITS</a>.
+The generated certificate will be valid for 5 years.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This required OpenSSL to be installed on your computer. Windows users should be warned that this is most likely not the case.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are here to replace an existing certificate, make sure you’ve contacted ITS to plan the switchover
+before actually changing the certificates.</p>
+</div>
+<p>In this guide <code class="docutils literal notranslate"><span class="pre">&lt;fqdn&gt;</span></code> refers to the hostname of your Service Provider
+(which is also used as part of your SP’s <code class="docutils literal notranslate"><span class="pre">entityID</span></code>).
+For example: <code class="docutils literal notranslate"><span class="pre">example-sp.hum.uu.nl</span></code>.</p>
+<p><strong>Step 1</strong> Generate a keyfile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>genrsa<span class="w"> </span>-out<span class="w"> </span>&lt;fqdn&gt;.key<span class="w"> </span><span class="m">4096</span>
+</pre></div>
+</div>
+<p><strong>Step 2</strong> Create an OpenSSL config file <cite>&lt;fqdn&gt;.cfg</cite></p>
+<p>Add the following content, replacing <code class="docutils literal notranslate"><span class="pre">&lt;fdqn&gt;</span></code> where applicable.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DNS.2</span></code> is optional. If you don’t know this value, you probably don’t need it.
+(And you should remove that line).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">req</span> <span class="p">]</span>
+<span class="n">default_bits</span>            <span class="o">=</span> <span class="mi">4096</span>
+<span class="n">default_keyfile</span>         <span class="o">=</span> <span class="o">&lt;</span><span class="n">fqdn</span><span class="o">&gt;.</span><span class="n">key</span>
+<span class="n">distinguished_name</span>      <span class="o">=</span> <span class="n">req_distinguished_name</span>
+<span class="n">attributes</span>              <span class="o">=</span> <span class="n">req_attributes</span>
+<span class="n">prompt</span>                  <span class="o">=</span> <span class="n">no</span>
+<span class="n">req_extensions</span>          <span class="o">=</span> <span class="n">v3_req</span>
+
+<span class="p">[</span> <span class="n">req_distinguished_name</span> <span class="p">]</span>
+<span class="n">C</span>                       <span class="o">=</span> <span class="n">NL</span>
+<span class="n">O</span>                       <span class="o">=</span> <span class="n">Universiteit</span> <span class="n">Utrecht</span>
+<span class="n">OU</span>                      <span class="o">=</span> <span class="n">DH</span><span class="o">-</span><span class="n">IT</span>
+<span class="n">ST</span>                      <span class="o">=</span> <span class="n">Utrecht</span>
+<span class="n">L</span>                       <span class="o">=</span> <span class="n">Utrecht</span>
+<span class="n">CN</span>                      <span class="o">=</span> <span class="o">&lt;</span><span class="n">fqdn</span><span class="o">&gt;</span>
+
+<span class="p">[</span> <span class="n">req_attributes</span> <span class="p">]</span>
+
+<span class="p">[</span> <span class="n">v3_req</span> <span class="p">]</span>
+<span class="n">subjectAltName</span><span class="o">=</span><span class="nd">@alt_names</span>
+<span class="n">keyUsage</span> <span class="o">=</span> <span class="n">digitalSignature</span>
+
+<span class="p">[</span><span class="n">alt_names</span><span class="p">]</span>
+<span class="n">DNS</span><span class="mf">.1</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">fqdn</span><span class="o">&gt;</span>
+<span class="n">DNS</span><span class="mf">.2</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">alt</span> <span class="n">fqdn</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This assumes you are a member of DH-IT. If you follow this guide as a member
+of a different faculty/organisation, please update the
+<code class="docutils literal notranslate"><span class="pre">req_distinguished_name</span></code> values accordingly.</p>
+</div>
+<p><strong>Step 3</strong> Generate a CSR (certificate signing request) file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>req<span class="w"> </span>-new<span class="w"> </span>-sha256<span class="w"> </span>-config<span class="w"> </span>&lt;fqdn&gt;.cfg<span class="w"> </span>-key<span class="w"> </span>&lt;fqdn&gt;.key<span class="w"> </span>-out<span class="w"> </span>&lt;fqdn&gt;.csr
+</pre></div>
+</div>
+<p><strong>Step 4</strong> Generate the certificate itself:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>openssl<span class="w"> </span>x509<span class="w"> </span>-req<span class="w"> </span>-sha384<span class="w"> </span>-days<span class="w"> </span><span class="m">1825</span><span class="w"> </span>-in<span class="w"> </span>&lt;fqdn&gt;.csr<span class="w"> </span>-signkey<span class="w"> </span>&lt;fqdn&gt;.key<span class="w"> </span>-out<span class="w"> </span>&lt;fqdn&gt;.crt<span class="w"> </span>-extfile<span class="w"> </span>&lt;fqdn&gt;.cfg<span class="w"> </span>-extensions<span class="w"> </span>v3_req
+</pre></div>
+</div>
+<p><strong>Step 5</strong> Use your newly created certificate for SAML!</p>
+<p>Please follow the guides applicable to your programming language/framework for
+more detailed information on how to do so.</p>
+<p>For reference, <code class="docutils literal notranslate"><span class="pre">&lt;fqdn&gt;.crt</span></code> is your certificate and <code class="docutils literal notranslate"><span class="pre">&lt;fdqn&gt;.key</span></code> is the
+corresponding private key, you will need both for SAML.
+<strong>Keep the latter save and secret.</strong></p>
+</section>
+
+
+                            </div>
+                            </div>
+                </div>
+    </div>
+
+    <footer class="uu-footer">
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Centre for Digital Humanities, Utrecht University.</p>
+  </div> 
+
+</footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+@import "bootstrap.min.css";
+
+.headerlink, .headerlink:hover {
+    text-decoration: none;
+    padding-left: 5px;
+}
+
+.headerlink {
+    color: transparent;
+}
+
+.toctree-wrapper .caption .caption-text {
+    font-size: 1.2rem;
+    font-weight: bolder;
+}
+
+.highlight {
+    padding: 0.7rem;
+}
+
+.highlight pre {
+    margin-bottom: 0;
+}

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+    <meta charset="utf-8"/><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>SAML &mdash; CDH Federated Authentication  documentation</title>
+            <link rel="stylesheet" href="../_static/pygments.css" type="text/css"/>
+            <link rel="stylesheet" href="../_static/theme.css" type="text/css"/>
+        <script src="../_static/bootstrap.bundle.min.js"></script>
+            
+                    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+                    <script src="../_static/doctools.js"></script>
+                    <script src="../_static/sphinx_highlight.js"></script>
+            <script src="../_static/js/theme.js"></script>
+            <link rel="index" title="Index" href="../genindex.html"/>
+            <link rel="search" title="Search" href="../search.html"/>
+            <link rel="next" title="PHP Guide" href="php.html"/>
+            <link rel="prev" title="General information" href="../general/index.html"/> 
+    <style>
+        .navbar .caption {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="uu-root-container">
+    <div class="uu-header">
+        <div class="uu-header-row">
+            <div class="uu-logo">
+                <img src="../_static/logo-header-en.svg">
+            </div>
+            <div class="fs-3 ms-5 text-black">
+                CDH Federated Authentication  documentation
+            </div>
+            <div class="border-left ms-auto">
+                <div role="search" class="ms-auto">
+                  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+                    <input type="text" class="form-control" name="q" placeholder="Search docs" />
+                    <input type="hidden" name="check_keywords" value="yes" />
+                    <input type="hidden" name="area" value="default" />
+                  </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        <nav class="navbar uu-navbar">
+            <div class="uu-navbar-container">
+                <a href="https://www.uu.nl" class="navbar-brand">
+                    <img src="../_static/logo-header-en.svg">
+                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbar-content"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon" />
+                </button>
+                <div id="navbar-content" class="collapse navbar-collapse">
+                        <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General information</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SAML</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developmentidp/index.html">Development IdP</a></li>
+</ul>
+
+                </div>
+            </div>
+        </nav>
+    <div class="uu-content">
+        <div class="uu-hero"><ol class="breadcrumb mb-0">
+    <li class="breadcrumb-item">
+        <a href="../index.html">
+            CDH Federated Authentication
+        </a>
+    </li>
+    <li class="breadcrumb-item active">SAML</li>
+</ol></div> 
+                <div class="uu-container">
+                    <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+                            <div itemprop="articleBody">
+                                
+  <section id="saml">
+<h1>SAML<a class="headerlink" href="#saml" title="Permalink to this heading">¶</a></h1>
+<p>SAML2 (Security Assertion Markup Language) is an xml-based standard for allowing
+federated authentication. The Univerity Utrecht is slowly moving all its web
+applications from LDAP authentication to SAML. With SAML, the user is
+redirected to a login page of the university, so no passwords have to be sent
+over the server that hosts an application, while still allowing Solis-ID
+authentication.</p>
+<p>SAML consists of two parts: The Identity Provider (IdP) and the Service
+Provider (SP). The Identity Provider is hosted by the university. The Service
+Provider rests with the application, and communicates with the Identity Provider.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A slightly more in-depth explaination on SAML can be found on
+<a class="reference external" href="https://communities.surf.nl/trust-en-identity/artikel/saml-for-dummies">this page</a>
+from Surf.</p>
+</div>
+<p>This documentation tries to describe how to set up a SAML Service Provider to
+communicate with the universities Identity Provider using various libraries in
+various programming languages. Currently we have guides for PHP (SimpleSamlPHP),
+Python (generic) and Django.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Guides:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="php.html">PHP Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="django.html">Django guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="certificates.html">Generating self-signed certificates</a></li>
+</ul>
+</div>
+<section id="general-saml-info">
+<h2>General SAML info<a class="headerlink" href="#general-saml-info" title="Permalink to this heading">¶</a></h2>
+<section id="certificates">
+<h3>Certificates<a class="headerlink" href="#certificates" title="Permalink to this heading">¶</a></h3>
+<p>SAML uses X.509 certificates to sign the communication between the IdP and the
+SP. This means your Service Provider will need its own set of certificates.</p>
+<p>ITS has some requirements on the certificates that are used, which can be
+viewed on <a class="reference external" href="https://wiki.iam.uu.nl/books/saml-20/page/vereiste-instellingen">their documentation</a>.</p>
+<p>You can use the SSL certificates used by your webhost for SSL, but these tend
+to expire quite quickly. We recommend you generate your own certificates, which
+can have a maximum lifetime of 5 years, which is decribed in the
+<a class="reference internal" href="certificates.html"><span class="doc">certificates guide</span></a>.</p>
+</section>
+<section id="environments">
+<h3>Environments<a class="headerlink" href="#environments" title="Permalink to this heading">¶</a></h3>
+<p>ITS provides two environments. The production environment contains all
+Solis-IDs available for employees and students of Utrecht University and is more
+strict in how it can be used. For acceptation, an acceptation environment is
+available. This environment is slightly less strict, but does not contain
+default Solis-ID’s. Instead, you have to work with test accounts, which
+ITS can create for you.</p>
+<p>Before you can use the production, ITS will require you to demonstrate your SP
+working with the acceptation environment. This will require test accounts, so
+make sure you have (active) test accounts!</p>
+</section>
+<section id="saml-trace">
+<h3>SAML Trace<a class="headerlink" href="#saml-trace" title="Permalink to this heading">¶</a></h3>
+<p>Before you can connect a production SP, ITS will require you to connect an
+acceptation SP first to test if it works. They’ll probably also want a SAML
+trace log from a successful login/logout using the acceptation IdP.</p>
+<p>This can be done by using the SAML-tracer extension:
+<a class="reference external" href="https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/">Firefox</a>,
+<a class="reference external" href="https://chrome.google.com/webstore/detail/saml-tracer/mpdajninpobndbfcldcmbpnnbhibjmch?hl=en">Chrome</a></p>
+<p>Simply open your app in a private window, open the tracer plugin and do a login
+followed by a logout. After that, search for the download button and sent the
+resulting file along with your request to connect your production SP.</p>
+</section>
+<section id="https">
+<h3>HTTPS<a class="headerlink" href="#https" title="Permalink to this heading">¶</a></h3>
+<p>ITS requires all service providers to send its authentication requests over SSL.
+This means SAML2 can only be used with servers that serve the web
+application over secure HTTP (HTTPS).</p>
+</section>
+</section>
+</section>
+
+
+                            </div>
+                            </div>
+                </div>
+    </div>
+
+    <footer class="uu-footer">
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Centre for Digital Humanities, Utrecht University.</p>
+  </div> 
+
+</footer>
+</div>
+
+</body>
+</html>

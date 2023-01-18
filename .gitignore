@@ -1,0 +1,6 @@
+# Virtual environments
+.env
+venv
+
+# Editors
+.idea
