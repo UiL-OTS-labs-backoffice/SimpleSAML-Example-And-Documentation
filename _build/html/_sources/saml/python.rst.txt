@@ -305,8 +305,8 @@ Using SAML auth in your project
 
 .. note:: We are loosely basing the following examples on Django,
    but you should take note of your framework's auth tools/code/backend on how
-   to actually implement this in your app. (Note: loosely means loosely, it's not
-   valid Django code either)
+   to actually implement this in your app. (Note: loosely means loosely, it's
+   not valid Django code either)
 
 Authenticate users in your Python application
 ---------------------------------------------

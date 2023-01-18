@@ -1,1 +1,2 @@
 sphinx==6.1.3
+-e git+https://github.com/CentreForDigitalHumanities/sphinx-theme.git@main#egg=uu_sphinx_theme

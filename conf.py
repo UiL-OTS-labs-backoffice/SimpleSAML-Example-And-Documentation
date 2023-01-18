@@ -5,13 +5,6 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-
-### TMP TODO remove
-import sys
-import os
-sys.path.insert(0, os.path.abspath('/home/ty/projects/python/'))
-### END TMP
-
 project = 'CDH Federated Authentication'
 copyright = '2023, Centre for Digital Humanities, Utrecht University'
 author = 'Centre for Digital Humanities, Utrecht University'
@@ -20,7 +13,8 @@ author = 'Centre for Digital Humanities, Utrecht University'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
+    'uu_sphinx_theme',
 ]
 
 templates_path = ['_templates']
@@ -32,11 +26,8 @@ exclude_patterns = ['.github', '.env', 'venv', '_build', 'Thumbs.db',
 
 # html_theme = 'alabaster'
 
-# TODO: repo
-html_theme = "sphinx-theme"
-html_theme_path = [
-    '/home/ty/projects/python/'
-]
+html_theme = "uu_sphinx_theme"
+html_theme_path = []
 
 html_static_path = ['_static']
 
